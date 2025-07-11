@@ -1,0 +1,159 @@
+---
+title: "Ass3"
+author: "Yukta Chavan"
+date: "2023-03-15"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyr)
+library(stringr)
+library(dplyr)
+library(forcats)
+library(ggplot2)
+```
+```{r data}
+pulitzer<- read.csv("E:/taming/pulitzer.csv")
+pulitzer
+```
+##Question 1(a):
+```{r q1a}
+pulitzer_1<- pulitzer %>%
+  mutate(change_0413 = str_replace(change_0413, "%", "") %>% as.integer())
+pulitzer_1
+```
+##Question 1(b):
+```{r q1b}
+pulitzer_1 <- pulitzer_1 %>% mutate(avg_cir = (circ_2004+circ_2013)/2)
+pulitzer_1
+```
+##Question 2(a)
+```{r q2ai}
+ggplot(pulitzer_1, aes(x=avg_cir)) +geom_histogram(fill = "aquamarine", color = "black") +
+theme_bw()
+
+```
+```{r q2aii}
+ggplot(pulitzer_1, aes(y=avg_cir)) +geom_boxplot(fill = "aquamarine", color = "black") +theme_bw()
+```
+```{r q2aiii}
+summary(pulitzer_1$avg_cir)
+```
+```{r q2aiiii}
+sd(pulitzer_1$avg_cir)
+```
+##Ans 2a- Shape: The distribution is rightly skewed and unimodal.
+##Location: From box plot, median circulation is near about 299,000.
+##Spread:220,000 is the interquartile range.
+##Outliers: there are 4 outliers which are - 800,000, 1.5 million, 2 million and 2.25 million.
+###Question 2b
+```{r q2b}
+ggplot(pulitzer_1, aes(x = change_0413)) +geom_histogram(color = "black", fill = "orange") 
+
+ggplot(pulitzer_1, aes(y=change_0413)) +geom_boxplot(fill = "orange", color = "black") 
+
+summary(pulitzer_1$change_0413)
+sd(pulitzer_1$change_0413)
+```
+##Ans 2b-Shape: The distribution is symmetrical with slightly right skewness, and unimodal.
+##Location: From the graph,-32.5% is change in the median while -29.2% is mean.
+##Spread: 20.75% is IQR (from box plot or summary).sd is 27%.
+##Outliers: There are 3 outliers. 1 at 67% and 2 at -100%. 
+
+##Ans 2c- As change_0413 is roughly symmetrical,it doesn’t need a log transform. avg_cir can be transformed to resolve the skewness.
+
+##Question 3(a)-
+```{r q3(a)}
+pu_cir <- lm(log(avg_cir) ~ prizes_9014, data=pulitzer_1)
+summary(pu_cir)
+exp(pu_cir$coefficients[1])
+```
+##Slope= 0.014083, intercept=12.463142.
+##Interpretation of intercept: Given a newspaper's log circulation of 12.46 at the end of a 25-year period in which it has won no Pulitzer Prizes, we expect it to have an actual circulation of 258,627, which translates to a log circulation of 0 for the newspaper.
+##Interpretation of slope: If a newspaper wins 1 more Pulitzer Awards over a 25-year period, log circulation is predicted to rise by 0.0148. The correlation between Pulitzer Awards and newspaper readership is statistically significant.
+```{r q3b}
+pu_ch <- lm(change_0413 ~ prizes_9014, data=pulitzer_1)
+summary(pu_ch)
+```
+##Slope=0.3870, intercept= -35.4152
+##Interpretation of intercept: If a newspaper receives no Pulitzer Prizes over the course of a 25-year period, we can anticipate a 35.4152% decline in circulation over the final 10 years of that time.
+##Interpretation of slope: If a newspaper wins one more Pulitzer Awards during a 25-year period, its readership is predicted to increase by 0.387%.
+##The change in newspaper circulation and the awarding of Pulitzer Prizes are statistically related.
+```{r q3c}
+#linearity
+plot(pu_cir, which=1)
+#homoscedasticity
+plot(pu_cir, which=3)
+#normality
+plot(pu_cir, which=2)
+#linearity
+plot(pu_ch, which=1)
+#homoscedasticity
+plot(pu_ch, which=3)
+#normality
+plot(pu_ch, which=2)
+
+```
+##Ans-For the model predicting circulation:
+###(1) Linearity appears to be reasonable; we would want to observe random scatter near zero. The residals vs. fitted plot shows almost no change in trend as we move from left to right.
+###(2)The homoscedasticity appears appropriate; I hope the vertical spread does not vary as we move from left to right. The scale vs. location plot shows almost no change in trend as we move from left to right.
+###(3)Despite two outliers, normality is reasonable and largely follows the trend line.
+###(4)Independence doesn't appear to be warranted because all observations were made during the same dates (1990 and 2014, or 2003 and 2014 for circulation), which indicates that all values will be affected similarly by macro factors in the publishing sector and are therefore are not independent.
+###for the model predicting change:
+###Linearity appears reasonable; nevertheless, despite the change in the red reference line, the residuals primarily show no trend and are only affected by a few outlier points. If adequately supported, this result would also be unjustifiable.
+###The scale vs. location figure shows a clear growing tendency as we move from left to right, which makes homoscedasticity appear implausible.
+###Normality appears less rational than the model that predicts circulation because it mainly follows the trend line, save from at the tails. Yet, if effectively argued, it will also appear illogical.
+###Independence is not justified.
+
+
+##Question 4
+```{r q4(a)}
+direc <- tibble(prizes_9014 = c(3,25,50))
+tibble(Prizes = direc$prizes_9014,
+`Expected_circulation` =
+predict(pu_cir, direc) %>% exp()) %>%
+knitr::kable(digits = 0, format.args = list(big.mark = ","))
+```
+###With the greatest investment in investigative journalism, the newspaper's predicted long-term circulation is at its highest. Only the circumstance in which 50 Pulitzer Prizes are won will result in an anticipated increase in circulation, in this case to 522,983 readers, compared to the existing circulation of 453,869 copies.
+```{r q4(b)}
+tibble(Prizes = direc$prizes_9014,
+`Expected_change (%)` =
+predict(pu_ch, direc)) %>%
+knitr::kable(digits = 0, format.args = list(big.mark = ","))
+```
+###All tactical options result in an anticipated drop in circulation. This is distinct from the first model, in which a particular circumstance results in an anticipated rise in circulation. When the current circulation is compared to the expected circulation in the first model, the percentage change in circulation does not match (although this is less significant because the change will occur over a future decade, not necessarily from the current circulation).
+```{r q4(c)}
+cir_con <- predict(pu_cir, direc, interval = "confidence", level=0.9) %>% exp()
+cir_con <- tibble(Prizes = direc$prizes_9014,
+`Lower bound for mean` = cir_con[,2],
+`Expected circulation` = cir_con[,1],
+`Upper bound for mean` = cir_con[,3] )
+cir_con %>% knitr::kable(digits = 0, format.args = list(big.mark = ","))
+```
+###In the last 25 years, newspapers with three Pulitzer Prizes have had an average circulation that falls between 236,000 and 309,000; those with 25 Pulitzer Prizes have an average circulation that falls between 324,000 and 418,000; and those with 50 Pulitzer Prizes have an average circulation that falls between 426,000 and 642,000.So, we can state with 90% certainty that newspapers that follow each of the three mentioned strategic strategies generally have different average circulations.
+```{r q4(d)}
+ch_con <- predict(pu_ch, direc, interval = "prediction", level=0.9)
+ch_con <- tibble(Prizes = direc$prizes_9014,
+`Lower bound for newspaper` = ch_con[,2],
+`Expected change in circulation` = ch_con[,1],
+`Upper bound for newspaper` = ch_con[,3] )
+ch_con %>% knitr::kable(digits = 1, format.args = list(big.mark = ","))
+```
+### with 90% certainty that the circulation of a newspaper with three Pulitzer Prizes in the last 25 years would have increased between -77.7% and 9.2%, between -69.2% and 17.7%, and between -60.2% and 28.1%.There is a lot of overlap between these prediction intervals, demonstrating that there is a wide range of potential outcomes for the Boston Sun-Herald in terms of change in circulation, independent of how many Pulitzer Awards it has received.
+
+##Question 5(a)
+###There is no proof that winning the Pulitzer Prize affects how widely anything is read. Another possibility is that larger newspapers have a higher probability of winning because the Pulitzer Prize committee is more likely to appreciate the journalism it has read. There is merely association as a result.
+###We assume that the newspaper will be able to exact targets for the number of Pulitzer Prizes it will bring home. It cannot do this without the permission of the Pulitzer committee.
+### The observations in the data set for the Pulitzer Prizes were made between 1990 and 2014, while those for the circulation numbers were made between 2003 and 2014. So, every macroeconomic and industry-wide variable that may have an effect on circulation figures affects everyone.
+
+###Conclusion-
+###The statistical models developed by Masthead Media are useful in identifying an association between the number of Pulitzer prizes won and the average circulation of the Boston Sun-Times. However, it is important to note that correlation does not necessarily imply causation. Therefore, it cannot be concluded that winning more Pulitzer prizes would lead to an increase in circulation.
+
+###There are several other factors that may affect the circulation of the newspaper, such as changing reader preferences, competition from other media outlets, and shifts in advertising trends. Therefore, a comprehensive analysis of the factors that influence circulation would be necessary to make an informed decision about the newspaper's strategic direction.
+
+###Additionally, as noted in the report, the data used in the models are from a specific time period and may not be applicable to the present or future. Therefore, ongoing monitoring and analysis of the newspaper's circulation trends and readership preferences would be necessary to adapt to changes in the market and make informed decisions about the newspaper's direction.
+
+###In conclusion, while the statistical models developed by Masthead Media provide valuable insights into the relationship between Pulitzer prizes and circulation, they do not provide definitive answers about the direction the Boston Sun-Times should take. A more comprehensive analysis of the factors that influence circulation, ongoing monitoring of readership preferences, and adaptation to changes in the market would be necessary to make informed decisions about the newspaper's strategic direction.
