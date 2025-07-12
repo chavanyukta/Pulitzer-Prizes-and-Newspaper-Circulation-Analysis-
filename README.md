@@ -24,7 +24,7 @@ This project analyzes the relationship between Pulitzer Prizes won by newspapers
 ---
 
 ## Project Files  
-- **Report:** `Pulitzer Prizes and Newspaper Circulation Analysis.pdf` — Full project report with detailed methodology, analysis, figures, and conclusions.  
+- **Report:** 'Pulitzer Prizes and Newspaper Circulation Analysis.pdf' — Full project report with detailed methodology, analysis, figures, and conclusions.  
 - **Code:** `Pulitzer_Analysis.Rmd` — R Markdown file containing all R code used for data processing, visualization, and modeling.  
 - **Data:** `pulitzer.csv` — Dataset file with circulation and prize data.  
 
