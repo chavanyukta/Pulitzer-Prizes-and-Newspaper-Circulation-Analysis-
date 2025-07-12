@@ -1,47 +1,28 @@
-# Pulitzer Prizes and Newspaper Circulation Analysis  
-**Author:** Yukta Chavan  
-**Date:** 2023-03-15  
+# Pulitzer Prizes and Newspaper Circulation Analysis
 
----
+## Project Overview
+This project analyses the relationship between Pulitzer Prizes won by newspapers and their circulation figures over a period of time. Using statistical models and visualisations, it explores how awards might correlate with readership trends.
 
-## Project Overview  
-This project analyzes the relationship between Pulitzer Prizes won by newspapers and their circulation trends over time. Using data on newspaper circulation from 2004 and 2013 along with Pulitzer Prize counts from 1990 to 2014, the project explores circulation changes, statistical associations, and regression modeling to provide insights into the media industry.  
+## Dataset
+The dataset `pulitzer.csv` contains circulation data and Pulitzer Prize counts for multiple newspapers.
 
----
+## Analysis
+The analysis includes data cleaning, visualization, statistical modeling, and interpretation to understand trends and correlations.
 
-## Dataset  
-- `pulitzer.csv` — Contains data on 45 major US newspapers including circulation figures, percent change, and Pulitzer Prizes won.  
+## Project Structure
+- `pulitzer.csv` — Raw dataset with newspaper circulation and prize info.
+- `R file.Rmd` — R Markdown file with code for analysis and visualization.
+- `Pulitzer Prizes and Newspaper Circulation Analysis.pdf` — Detailed project report with findings.
+- `README.md` — This file.
 
----
+## How to Run the Code
+Open and run the `R file.Rmd` file in RStudio or any compatible R environment to reproduce the analysis and generate visualizations.
 
-## Analysis  
-- Data cleaning and transformation of circulation change values.  
-- Visualization of circulation and change distributions.  
-- Linear regression modeling to predict circulation metrics based on Pulitzer Prize counts.  
-- Diagnostic checks for model assumptions.  
-- Interpretation of results and discussion of implications.  
+## Project Report
+You can read the full detailed project report here:  
+[Pulitzer Prizes and Newspaper Circulation Analysis](./Pulitzer%20Prizes%20and%20Newspaper%20Circulation%20Analysis.pdf)
 
----
-
-## Project Files  
-- **Report:** 'Pulitzer Prizes and Newspaper Circulation Analysis.pdf' — Full project report with detailed methodology, analysis, figures, and conclusions.  
-- **Code:** `Pulitzer_Analysis.Rmd` — R Markdown file containing all R code used for data processing, visualization, and modeling.  
-- **Data:** `pulitzer.csv` — Dataset file with circulation and prize data.  
-
----
-
-## How to Run the Code  
-1. Open the `Pulitzer_Analysis.Rmd` file in RStudio or an R environment that supports R Markdown.  
-2. Ensure the `pulitzer.csv` file is in the working directory or update the path accordingly in the code.  
-3. Knit the Rmd file to generate a full report including all code outputs and plots.  
-
----
-
-## Contact  
-For questions or collaboration:  
-**Email:** chavanyukta@gmail.com
-
----
-
-*This project provides a comprehensive analysis of the association between Pulitzer Prizes and newspaper circulation trends over a multi-decade period.*  
-
+## Contact
+For any questions, please contact:  
+Yukta Chavan  
+Email: chavanyukta@gmail.com
